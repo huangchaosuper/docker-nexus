@@ -50,7 +50,7 @@ EXPOSE	8081
 
 #USER	nexus
 
-VOLUME	["/opt/sonatype-work", "/opt/nexus/conf"]
+#VOLUME	["/opt/sonatype-work", "/opt/nexus/conf"]
 
 # Start Supervisor
 CMD	/usr/bin/supervisord
