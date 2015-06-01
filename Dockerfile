@@ -19,39 +19,39 @@ RUN apt-get install -y --no-install-recommends supervisor
 RUN apt-get clean
 
 # Java
-RUN	cd /tmp && \ 
-	curl -b gpw_e24=http%3A%2F%2Fwww.oracle.com -b oraclelicense=accept-securebackup-cookie -O -L http://download.oracle.com/otn-pub/java/jdk/8u20-b26/jdk-8u20-linux-x64.tar.gz && \
-	tar -zxf /tmp/jdk-8u20-linux-x64.tar.gz -C /usr/local && \
-	ln -s /usr/local/jdk1.8.0_20 /usr/local/java && \
-	rm /tmp/jdk-8u20-linux-x64.tar.gz
+RUN    cd /tmp && \ 
+    curl -b gpw_e24=http%3A%2F%2Fwww.oracle.com -b oraclelicense=accept-securebackup-cookie -O -L http://download.oracle.com/otn-pub/java/jdk/8u20-b26/jdk-8u20-linux-x64.tar.gz && \
+    tar -zxf /tmp/jdk-8u20-linux-x64.tar.gz -C /usr/local && \
+    ln -s /usr/local/jdk1.8.0_20 /usr/local/java && \
+    rm /tmp/jdk-8u20-linux-x64.tar.gz
 
 # Enviroment
-ENV	JAVA_HOME /usr/local/java
-ENV	PATH $PATH:$JAVA_HOME/bin
+ENV    JAVA_HOME /usr/local/java
+ENV    PATH $PATH:$JAVA_HOME/bin
 
 # Nexus
-RUN	cd /tmp && \
-	curl -O -L http://www.sonatype.org/downloads/nexus-2.9.0-bundle.tar.gz && \
-	tar -zxf nexus-2.9.0-bundle.tar.gz -C /opt && \
-	mv /opt/nexus* /opt/nexus && \
-	useradd nexus && \
-	rm nexus-2.9.0-bundle.tar.gz
+RUN    cd /tmp && \
+    curl -O -L http://www.sonatype.org/downloads/nexus-2.9.0-bundle.tar.gz && \
+    tar -zxf nexus-2.9.0-bundle.tar.gz -C /opt && \
+    mv /opt/nexus* /opt/nexus && \
+    useradd nexus && \
+    rm nexus-2.9.0-bundle.tar.gz
 
 RUN     chown -R nexus /opt/sonatype-work && \
         chown -R nexus /opt/nexus
 
 # Supervisor
-RUN 	mkdir -p /var/log/supervisor && mkdir -p /opt/supervisor
-ADD 	nexus.conf /etc/supervisor/conf.d/nexus.conf
-ADD 	nexus_supervisor /opt/supervisor/nexus_supervisor
-RUN 	chmod u+x /opt/supervisor/nexus_supervisor && chown nexus.nexus /opt/supervisor/nexus_supervisor
+RUN     mkdir -p /var/log/supervisor && mkdir -p /opt/supervisor
+ADD     nexus.conf /etc/supervisor/conf.d/nexus.conf
+ADD     nexus_supervisor /opt/supervisor/nexus_supervisor
+RUN     chmod u+x /opt/supervisor/nexus_supervisor && chown nexus.nexus /opt/supervisor/nexus_supervisor
 
-EXPOSE	8081
+EXPOSE    8081
 
-#USER	nexus
+#USER    nexus
 
-#VOLUME	["/opt/sonatype-work", "/opt/nexus/conf"]
+#VOLUME    ["/opt/sonatype-work", "/opt/nexus/conf"]
 
 # Start Supervisor
-CMD	/usr/bin/supervisord
+CMD    /usr/bin/supervisord
 
