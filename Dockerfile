@@ -15,7 +15,6 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update
 RUN apt-get -y upgrade
 RUN apt-get install -y curl
-RUN apt-get install -y --no-install-recommends supervisor
 RUN apt-get clean
 
 # Java
@@ -31,20 +30,15 @@ ENV    PATH $PATH:$JAVA_HOME/bin
 
 # Nexus
 RUN    cd /tmp && \
-    curl -O -L http://www.sonatype.org/downloads/nexus-2.9.0-bundle.tar.gz && \
-    tar -zxf nexus-2.9.0-bundle.tar.gz -C /opt && \
+    curl -O -L https://sonatype-download.global.ssl.fastly.net/nexus/oss/nexus-latest-bundle.tar.gz && \
+    tar -zxf nexus-latest-bundle.tar.gz -C /opt && \
     mv /opt/nexus* /opt/nexus && \
     useradd nexus && \
-    rm nexus-2.9.0-bundle.tar.gz
+    rm nexus-latest-bundle.tar.gz
 
 RUN     chown -R nexus /opt/sonatype-work && \
         chown -R nexus /opt/nexus
 
-# Supervisor
-RUN     mkdir -p /var/log/supervisor && mkdir -p /opt/supervisor
-ADD     nexus.conf /etc/supervisor/conf.d/nexus.conf
-ADD     nexus_supervisor /opt/supervisor/nexus_supervisor
-RUN     chmod u+x /opt/supervisor/nexus_supervisor && chown nexus.nexus /opt/supervisor/nexus_supervisor
 
 EXPOSE    8081
 
@@ -52,6 +46,6 @@ EXPOSE    8081
 
 #VOLUME    ["/opt/sonatype-work", "/opt/nexus/conf"]
 
-# Start Supervisor
-CMD    /usr/bin/supervisord
+# Start Nexus
+CMD    /opt/nexus/bin/nexus start
 
