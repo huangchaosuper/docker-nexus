@@ -28,9 +28,7 @@ RUN    cd /tmp && \
 ENV    JAVA_HOME /usr/local/java
 ENV    PATH $PATH:$JAVA_HOME/bin
 
-ENV    JAVA_OPTS $JAVA_OPTS:" -Xms192m -Xmx192m -XX:MaxPermSize=64m "
 # Nexus
-ENV    RUN_AS_USER nexus
 RUN    cd /tmp && \
     curl -O -L https://sonatype-download.global.ssl.fastly.net/nexus/oss/nexus-latest-bundle.tar.gz && \
     tar -zxf nexus-latest-bundle.tar.gz -C /opt && \
